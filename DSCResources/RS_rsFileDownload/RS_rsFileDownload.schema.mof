@@ -1,0 +1,8 @@
+[ClassVersion("1.0.0"), FriendlyName("rsFileDownload")]
+class RS_rsFileDownload : OMI_BaseResource
+{
+[key] string SourceURL;
+[key] string DestinationPath;
+[key] string DestinationFileName;
+[write,ValueMap{"Present", "Absent"},Values{"Present", "Absent"}] string Ensure;
+};
