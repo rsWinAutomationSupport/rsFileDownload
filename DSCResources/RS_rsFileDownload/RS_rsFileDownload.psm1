@@ -20,7 +20,7 @@ function Get-TargetResource
 		[string]$DestinationFilename
 	)
 	
-	if(!(Test-Path -Path $($DestinationPath,$DestinationFilename -join "\")))
+	if(!(Test-Path -Path $($DestinationFolder,$DestinationFilename -join "\")))
 	{
 		Write-Verbose "File is not present and needs to be downloaded."
 		$Configuration = @{
@@ -69,11 +69,11 @@ function Set-TargetResource
 	)
 	if ($Ensure -like 'Present')
 	{
-		if(!(Test-Path -Path $($DestinationPath,$DestinationFilename -join "\")))
+		if(!(Test-Path -Path $($DestinationFolder,$DestinationFilename -join "\")))
 		{
 			Write-Verbose "File is not present and will be downloaded."
 			$webclient = New-Object System.Net.WebClient
-			$webclient.DownloadFile($SourceURL,$($DestinationPath,$DestinationFilename -join "\"))
+			$webclient.DownloadFile($SourceURL,$($DestinationFolder,$DestinationFilename -join "\"))
 		}
 		else
 		{
@@ -82,7 +82,7 @@ function Set-TargetResource
 	}
 	else
 	{
-		if(!(Test-Path -Path $($DestinationPath,$DestinationFilename -join "\")))
+		if (!(Test-Path -Path $($DestinationFolder,$DestinationFilename -join "\")))
 		{
 			Write-Verbose "File is not present, no action needed"
 		}
@@ -121,12 +121,12 @@ function Test-TargetResource
 	
 	$IsValid = $false
 	
-	$FileLocation = $($DestinationPath,$DestinationFilename -join "\")
+	$FileLocation = $($DestinationFolder,$DestinationFilename -join "\")
 	
 	if ($Ensure -like 'Present')
 	{
 		Write-Verbose "Checking for $DestinationFilename inside $DestinationFolder."
-		if(!(Test-Path -Path $($DestinationPath,$DestinationFilename -join "\")))
+		if(!(Test-Path -Path $($DestinationFolder,$DestinationFilename -join "\")))
 		{
 			Write-Verbose "File is not present."
 		}
@@ -138,7 +138,7 @@ function Test-TargetResource
 	}
 	else
 	{
-		if(!(Test-Path -Path $($DestinationPath,$DestinationFilename -join "\")))
+		if(!(Test-Path -Path $($DestinationFolder,$DestinationFilename -join "\")))
 		{
 			Write-Verbose "File is not present."
 			$IsValid = $true
@@ -148,7 +148,7 @@ function Test-TargetResource
 			Write-Verbose "File is present."
 		}
 	}
-	$return $IsValid
+	return $IsValid
 }
 
 
