@@ -69,11 +69,22 @@ function Set-TargetResource
 	)
 	if ($Ensure -like 'Present')
 	{
-		if(!(Test-Path -Path $($DestinationFolder,$DestinationFilename -join "\")))
+		if(!(Test-Path -Path $($DestinationFolder,$DestinationFilename -join "\"))) 
 		{
 			Write-Verbose "File is not present and will be downloaded."
-			$webclient = New-Object System.Net.WebClient
-			$webclient.DownloadFile($SourceURL,$($DestinationFolder,$DestinationFilename -join "\"))
+			$downloadtry = 1
+			While ($downloadtry -lt 3)
+				{
+					try{
+						$downloadtry = 3
+						$webclient = New-Object System.Net.WebClient
+						$webclient.DownloadFile($SourceURL,$($DestinationFolder,$DestinationFilename -join "\"))
+					}
+					catch{
+						Write-Verbose "retrying"
+						$downloadtry++
+					}
+				}
 		}
 		else
 		{
