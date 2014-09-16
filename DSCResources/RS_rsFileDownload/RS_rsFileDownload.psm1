@@ -91,11 +91,14 @@ function Set-TargetResource
 				{
 					try{
 						Write-Verbose "Trying download $downloadtry"
+						try{
 						$webclient = New-Object System.Net.WebClient
 						$webclient.DownloadFile($SourceURL,$($DestinationFolder,$DestinationFilename -join "\"))
+						}
+						catch(WebException Ex){}
 						$downloadtry = 4
 					}
-					catch(Exception Ex){
+					catch{
 						if ($downloadtry -lt 3){
 						Write-Verbose "Download failed - retrying"
 						$downloadtry++
