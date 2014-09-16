@@ -67,6 +67,13 @@ function Set-TargetResource
 		[ValidateNotNullOrEmpty()]
 		[string]$DestinationFilename
 	)
+	try
+	{
+	$myLogSource = $PSCmdlet.MyInvocation.MyCommand.ModuleName
+	New-Eventlog -LogName "DevOps" -Source $myLogSource -ErrorAction SilentlyContinue
+	}
+	catch {}
+	
 	if ($Ensure -like 'Present')
 	{
 		if(!(Test-Path -Path $DestinationFolder)) 
@@ -78,13 +85,14 @@ function Set-TargetResource
 		if(!(Test-Path -Path $($DestinationFolder,$DestinationFilename -join "\"))) 
 		{
 			Write-Verbose "File is not present and will be downloaded."
+			Write-EventLog -LogName DevOps -Source $myLogSource -EntryType Information -EventId 1000 -Message ("File $DestinationFilename not present, downloading")
 			$downloadtry = 1
 			While ($downloadtry -lt 4)
 				{
 					try{
 						Write-Verbose "Trying download $downloadtry"
 						$webclient = New-Object System.Net.WebClient
-						$webclient.DownloadFile($SourceURL,$($DestinationFolder,$DestinationFilename -join "\"))
+						$webclient.DownloadFile($SourceURL,$($DestinationFolder,$DestinationFilename -join "\")) -ErrorAction SilentlyContinue
 						$downloadtry = 4
 					}
 					catch{
@@ -95,6 +103,7 @@ function Set-TargetResource
 						
 						else {
 						Write-Verbose "Download failed - retry limit reached"
+						Write-EventLog -LogName DevOps -Source $myLogSource -EntryType Information -EventId 1000 -Message ("Retry limit reached attempting to download $SourceURL")
 						$downloadtry++	
 						}
 					}
