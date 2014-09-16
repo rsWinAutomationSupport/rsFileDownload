@@ -95,16 +95,9 @@ function Set-TargetResource
 						$downloadtry = 4
 					}
 					catch [System.Net.WebException] {
-						if ($downloadtry -lt 3){
-						Write-Verbose "Download failed - retrying"
+						Write-Verbose "Download failed"
 						$downloadtry++
 						}
-						
-						else {
-						Write-Verbose "Download failed - retry limit reached"
-						$downloadtry++	
-						}
-					}
 				}
 		}
 		else
