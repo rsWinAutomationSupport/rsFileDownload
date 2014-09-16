@@ -95,7 +95,7 @@ function Set-TargetResource
 						$webclient = New-Object System.Net.WebClient
 						$webclient.DownloadFile($SourceURL,$($DestinationFolder,$DestinationFilename -join "\"))
 						}
-						catch(WebException Ex){}
+						catch[WebException]{}
 						$downloadtry = 4
 					}
 					catch{
