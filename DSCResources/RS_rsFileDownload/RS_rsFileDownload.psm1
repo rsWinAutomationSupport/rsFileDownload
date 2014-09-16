@@ -85,20 +85,16 @@ function Set-TargetResource
 		if(!(Test-Path -Path $($DestinationFolder,$DestinationFilename -join "\"))) 
 		{
 			Write-Verbose "File is not present and will be downloaded."
-			Write-EventLog -LogName DevOps -Source $myLogSource -EntryType Information -EventId 1000 -Message ("File $DestinationFilename not present, downloading")
 			$downloadtry = 1
 			While ($downloadtry -lt 4)
 				{
 					try{
 						Write-Verbose "Trying download $downloadtry"
-						try{
 						$webclient = New-Object System.Net.WebClient
 						$webclient.DownloadFile($SourceURL,$($DestinationFolder,$DestinationFilename -join "\"))
-						}
-						catch[WebException]{}
 						$downloadtry = 4
 					}
-					catch{
+					catch [System.Net.WebException] {
 						if ($downloadtry -lt 3){
 						Write-Verbose "Download failed - retrying"
 						$downloadtry++
@@ -106,7 +102,6 @@ function Set-TargetResource
 						
 						else {
 						Write-Verbose "Download failed - retry limit reached"
-						Write-EventLog -LogName DevOps -Source $myLogSource -EntryType Information -EventId 1000 -Message ("Retry limit reached attempting to download $SourceURL")
 						$downloadtry++	
 						}
 					}
