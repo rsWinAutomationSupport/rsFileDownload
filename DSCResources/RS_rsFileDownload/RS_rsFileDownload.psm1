@@ -41,7 +41,7 @@ function Get-TargetResource
 					}
 	}
 	
-		
+    return $Configuration
 }
 
 
@@ -67,25 +67,17 @@ function Set-TargetResource
 		[ValidateNotNullOrEmpty()]
 		[string]$DestinationFilename
 	)
-	try
-	{
-	$myLogSource = $PSCmdlet.MyInvocation.MyCommand.ModuleName
-	New-Eventlog -LogName "DevOps" -Source $myLogSource -ErrorAction SilentlyContinue
-	}
-	catch {}
-	
 	if ($Ensure -like 'Present')
 	{
-		if(!(Test-Path -Path $DestinationFolder)) 
+        if(!(Test-Path -Path $DestinationFolder)) 
 		{
 			Write-Verbose "Folder is not present and will be created."
 			New-Item $DestinationFolder -type directory
 		}
-
-		if(!(Test-Path -Path $($DestinationFolder,$DestinationFilename -join "\"))) 
+		if(!(Test-Path -Path $($DestinationFolder,$DestinationFilename -join "\")))
 		{
 			Write-Verbose "File is not present and will be downloaded."
-			$downloadtry = 1
+        	$downloadtry = 1
 			While ($downloadtry -lt 4)
 				{
 					try{
@@ -97,7 +89,7 @@ function Set-TargetResource
 					catch [System.Net.WebException] {
 						Write-Verbose "Download failed"
 						$downloadtry++
-						}
+					}
 				}
 		}
 		else
