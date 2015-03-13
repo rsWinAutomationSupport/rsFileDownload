@@ -20,26 +20,14 @@ function Get-TargetResource
 		[string]$DestinationFilename
 	)
 	
-	if(!(Test-Path -Path $($DestinationFolder,$DestinationFilename -join "\")))
-	{
-		Write-Verbose "File is not present and needs to be downloaded."
+
 		$Configuration = @{
 					Ensure = $Ensure
 					SourceURL = $SourceURL
 					DestinationFolder = $DestinationFolder
 					DestinationFilename = $DestinationFilename
 					}
-	}
-	else
-	{
-		Write-Verbose "File is present."
-		$Configuration = @{
-					Ensure = $Ensure
-					SourceURL = $SourceURL
-					DestinationFolder = $DestinationFolder
-					DestinationFilename = $DestinationFilename
-					}
-	}
+
 	
     return $Configuration
 }
@@ -138,9 +126,11 @@ function Test-TargetResource
 	
 	$IsValid = $false
 	
-	$FileLocation = $($DestinationFolder,$DestinationFilename -join "\")
 	
-	if ($Ensure -like 'Present')
+    $FileLocation = $($DestinationFolder,$DestinationFilename -join "\")
+	
+
+	if ($Ensure -eq 'Present')
 	{
 		Write-Verbose "Checking for $DestinationFilename inside $DestinationFolder."
 		if(!(Test-Path -Path $($DestinationFolder,$DestinationFilename -join "\")))
